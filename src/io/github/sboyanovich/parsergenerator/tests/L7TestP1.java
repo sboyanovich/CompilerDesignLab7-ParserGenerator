@@ -1,7 +1,7 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
 import io.github.sboyanovich.parsergenerator.ParseTree;
-import io.github.sboyanovich.parsergenerator.aux.UnifiedAlphabetSymbol;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;

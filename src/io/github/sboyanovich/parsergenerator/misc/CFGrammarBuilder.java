@@ -1,4 +1,4 @@
-package io.github.sboyanovich.parsergenerator.aux;
+package io.github.sboyanovich.parsergenerator.misc;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

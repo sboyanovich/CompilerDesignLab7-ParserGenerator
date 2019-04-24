@@ -1,4 +1,4 @@
-package io.github.sboyanovich.parsergenerator.aux;
+package io.github.sboyanovich.parsergenerator.misc;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,6 @@
 package io.github.sboyanovich.parsergenerator;
 
-import io.github.sboyanovich.parsergenerator.aux.*;
+import io.github.sboyanovich.parsergenerator.misc.*;
 import io.github.sboyanovich.scannergenerator.scanner.token.TokenWithAttribute;
 
 import java.util.ArrayList;

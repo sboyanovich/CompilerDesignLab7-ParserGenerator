@@ -1,6 +1,6 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
-import io.github.sboyanovich.parsergenerator.aux.*;
+import io.github.sboyanovich.parsergenerator.misc.*;
 
 import java.util.List;
 

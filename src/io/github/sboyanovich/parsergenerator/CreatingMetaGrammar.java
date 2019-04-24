@@ -1,7 +1,7 @@
 package io.github.sboyanovich.parsergenerator;
 
-import io.github.sboyanovich.parsergenerator.aux.CFGrammar;
-import io.github.sboyanovich.parsergenerator.aux.UnifiedAlphabetSymbol;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;

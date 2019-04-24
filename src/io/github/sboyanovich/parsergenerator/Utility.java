@@ -1,8 +1,8 @@
 package io.github.sboyanovich.parsergenerator;
 
-import io.github.sboyanovich.parsergenerator.aux.CFGrammar;
-import io.github.sboyanovich.parsergenerator.aux.UAString;
-import io.github.sboyanovich.parsergenerator.aux.UnifiedAlphabetSymbol;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UAString;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.scanner.Text;
 import io.github.sboyanovich.scannergenerator.scanner.token.Domain;
 import io.github.sboyanovich.scannergenerator.scanner.token.Token;
@@ -138,7 +138,7 @@ public class Utility {
         result.append("package io.github.sboyanovich.parsergenerator.generated;\n" +
                 "\n" +
                 "import io.github.sboyanovich.scannergenerator.scanner.token.Domain;\n" +
-                "import io.github.sboyanovich.parsergenerator.aux.UnifiedAlphabetSymbol;\n" +
+                "import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;\n" +
                 "import java.util.*;\n");
 
         result.append("public class ")

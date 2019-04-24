@@ -3,7 +3,7 @@ package io.github.sboyanovich.parsergenerator.tests;
 import io.github.sboyanovich.parsergenerator.ArithmeticExpressionCalculator;
 import io.github.sboyanovich.parsergenerator.ParseException;
 import io.github.sboyanovich.parsergenerator.ParseTree;
-import io.github.sboyanovich.parsergenerator.aux.UnifiedAlphabetSymbol;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.generated.ArithmeticExpressionGrammar;
 import io.github.sboyanovich.parsergenerator.data.CommonCharClasses;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithIntegerAttribute;
