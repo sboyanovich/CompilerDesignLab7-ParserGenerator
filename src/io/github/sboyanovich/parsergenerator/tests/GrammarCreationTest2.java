@@ -30,8 +30,8 @@ import static io.github.sboyanovich.parsergenerator.data.StateTags.*;
 import static io.github.sboyanovich.scannergenerator.utility.Utility.*;
 
 /**
- * GENERATING PARSER FOR ARITHMETIC EXPRESSION GRAMMAR
- * */
+ * GENERATING PARSER FOR ARITHMETIC EXPRESSION GRAMMAR (USING GENERATED META-GRAMMAR PARSER)
+ */
 public class GrammarCreationTest2 {
     public static void main(String[] args) {
         int alphabetSize = Character.MAX_CODE_POINT + 1;
@@ -181,28 +181,6 @@ public class GrammarCreationTest2 {
         }
 
         List<String> nonTerminalNamesList = BaseGrammar.getNonTerminalNames();
-
-        // GRAMMAR
-        /*
-            0	<lang> 		    := <rule> <rule_list> .
-            1	<rule_list>	    := <rule> <rule_list> | .
-            2	<rule>		    := <lhs> EQUALS <rhs_list> DOT .
-            3	<rhs_list>	    := <rhs> <rhs_list_c> .
-            4	<rhs_list_c>	:= VERTICAL_BAR <rhs_list> | .
-            5	<rhs>		    := <t> <rhs> | .
-            6	<t>		        := TERMINAL | NON_TERMINAL .
-            7	<lhs>		    := NON_TERMINAL | AXM_DECL .
-        */
-        // TERMINALS ORDER
-        /*
-            0   TERMINAL
-            1   NON_TERMINAL
-            2   AXM_DECL
-            3   DOT
-            4   VERTICAL_BAR
-            5   EQUALS
-            6   $
-        */
 
         Function<Integer, String> nonTerminalNames = nonTerminalNamesList::get;
         int axiom = BaseGrammar.getAxiom();

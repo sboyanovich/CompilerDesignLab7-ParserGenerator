@@ -1,12 +1,12 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
 import io.github.sboyanovich.parsergenerator.*;
-import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
-import io.github.sboyanovich.parsergenerator.misc.UAString;
-import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;
+import io.github.sboyanovich.parsergenerator.generated.BaseGrammar;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.automata.NFA;
 import io.github.sboyanovich.scannergenerator.scanner.Compiler;
 import io.github.sboyanovich.scannergenerator.scanner.*;
@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static io.github.sboyanovich.parsergenerator.Utility.inverseMap;
 import static io.github.sboyanovich.parsergenerator.Utility.writeToFile;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.alphanumerics;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.letters;
@@ -28,7 +29,7 @@ import static io.github.sboyanovich.parsergenerator.data.StateTags.*;
 import static io.github.sboyanovich.scannergenerator.utility.Utility.*;
 
 /**
- * GENERATING PARSER FOR GRAMMAR GRAMMAR USING HARDCODED GRAMMAR AND PREDICTION TABLE
+ * GENERATING PARSER FOR GRAMMAR GRAMMAR USING GENERATED META-GRAMMAR PARSER
  */
 public class GrammarCreationTest1 {
     public static void main(String[] args) {
@@ -177,161 +178,24 @@ public class GrammarCreationTest1 {
         for (Map.Entry<Position, Message> entry : messages.entrySet()) {
             System.out.println(entry.getValue() + " at " + entry.getKey());
         }
-
-        List<String> nonTerminalNamesList = List.of(
-                "<lang>",
-                "<rule_list>",
-                "<rule>",
-                "<rhs_list>",
-                "<rhs_list_c>",
-                "<rhs>",
-                "<t>",
-                "<lhs>"
-        );
-
-        /// HARDCODING PREDICTION TABLE AND PRODUCTION RULES
-
-        // GRAMMAR
-        /*
-            0	<lang> 		    := <rule> <rule_list> .
-            1	<rule_list>	    := <rule> <rule_list> | .
-            2	<rule>		    := <lhs> EQUALS <rhs_list> DOT .
-            3	<rhs_list>	    := <rhs> <rhs_list_c> .
-            4	<rhs_list_c>	:= VERTICAL_BAR <rhs_list> | .
-            5	<rhs>		    := <t> <rhs> | .
-            6	<t>		        := TERMINAL | NON_TERMINAL .
-            7	<lhs>		    := NON_TERMINAL | AXM_DECL .
-        */
-        // TERMINALS ORDER
-        /*
-            0   TERMINAL
-            1   NON_TERMINAL
-            2   AXM_DECL
-            3   DOT
-            4   VERTICAL_BAR
-            5   EQUALS
-            6   $
-        */
+        List<String> nonTerminalNamesList = BaseGrammar.getNonTerminalNames();
 
         Function<Integer, String> nonTerminalNames = nonTerminalNamesList::get;
-
-        Map<Domain, Integer> tNumMap = Map.of(
-                DomainsWithStringAttribute.TERMINAL, 0,
-                DomainsWithStringAttribute.NON_TERMINAL, 1,
-                DomainsWithStringAttribute.AXM_DECL, 2,
-                SimpleDomains.DOT, 3,
-                SimpleDomains.VERTICAL_BAR, 4,
-                SimpleDomains.EQUALS, 5,
-                Domain.END_OF_PROGRAM, 6
+        int axiom = BaseGrammar.getAxiom();
+        Map<String, Domain> domainNames = Map.of(
+                "TERMINAL", DomainsWithStringAttribute.TERMINAL,
+                "NON_TERMINAL", DomainsWithStringAttribute.NON_TERMINAL,
+                "AXM_DECL", DomainsWithStringAttribute.AXM_DECL,
+                "\\.", SimpleDomains.DOT,
+                "\\|", SimpleDomains.VERTICAL_BAR,
+                "\\=", SimpleDomains.EQUALS
         );
-        Map<Integer, Domain> tNumMapInv = io.github.sboyanovich.parsergenerator.Utility.inverseMap(tNumMap);
-        Function<Domain, Integer> terminalNumbering = tNumMap::get;
-        Function<Integer, Domain> interpretation = tNumMapInv::get;
-
-        int[][] table = new int[nonTerminalNamesList.size()][tNumMap.size()];
-        // initializing table with -1 (ERR)
-        for (int i = 0; i < table.length; i++) {
-            for (int j = 0; j < table[i].length; j++) {
-                table[i][j] = -1;
-            }
-        }
-        Map<Integer, Map<Integer, List<UnifiedAlphabetSymbol>>> rules = new HashMap<>();
-
-        table[0][terminalNumbering.apply(DomainsWithStringAttribute.AXM_DECL)] = 1;
-        table[0][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-
-        rules.put(0, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(2, false),
-                        new UnifiedAlphabetSymbol(1, false)
-                )
-        ));
-
-        table[1][terminalNumbering.apply(DomainsWithStringAttribute.AXM_DECL)] = 1;
-        table[1][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-        table[1][terminalNumbering.apply(Domain.END_OF_PROGRAM)] = 2;
-
-        rules.put(1, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(2, false),
-                        new UnifiedAlphabetSymbol(1, false)
-                ),
-                2, List.of()
-        ));
-
-        table[2][terminalNumbering.apply(DomainsWithStringAttribute.AXM_DECL)] = 1;
-        table[2][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-
-        rules.put(2, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(7, false),
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(SimpleDomains.EQUALS), true),
-                        new UnifiedAlphabetSymbol(3, false),
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(SimpleDomains.DOT), true)
-                )
-        ));
-
-        table[3][terminalNumbering.apply(DomainsWithStringAttribute.TERMINAL)] = 1;
-        table[3][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-        table[3][terminalNumbering.apply(SimpleDomains.VERTICAL_BAR)] = 1;
-        table[3][terminalNumbering.apply(SimpleDomains.DOT)] = 1;
-
-        rules.put(3, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(5, false),
-                        new UnifiedAlphabetSymbol(4, false)
-                )
-        ));
-
-        table[4][terminalNumbering.apply(SimpleDomains.VERTICAL_BAR)] = 1;
-        table[4][terminalNumbering.apply(SimpleDomains.DOT)] = 2;
-
-        rules.put(4, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(SimpleDomains.VERTICAL_BAR), true),
-                        new UnifiedAlphabetSymbol(3, false)
-                ),
-                2, List.of()
-        ));
-
-        table[5][terminalNumbering.apply(DomainsWithStringAttribute.TERMINAL)] = 1;
-        table[5][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-        table[5][terminalNumbering.apply(SimpleDomains.VERTICAL_BAR)] = 2;
-        table[5][terminalNumbering.apply(SimpleDomains.DOT)] = 2;
-
-        rules.put(5, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(6, false),
-                        new UnifiedAlphabetSymbol(5, false)
-                ),
-                2, List.of()
-        ));
-
-        table[6][terminalNumbering.apply(DomainsWithStringAttribute.TERMINAL)] = 1;
-        table[6][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 2;
-
-        rules.put(6, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(DomainsWithStringAttribute.TERMINAL), true)
-                ),
-                2, List.of(
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL), true)
-                )
-        ));
-
-        table[7][terminalNumbering.apply(DomainsWithStringAttribute.AXM_DECL)] = 2;
-        table[7][terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL)] = 1;
-
-        rules.put(7, Map.of(
-                1, List.of(
-                        new UnifiedAlphabetSymbol(
-                                terminalNumbering.apply(DomainsWithStringAttribute.NON_TERMINAL), true
-                        )
-                ),
-                2, List.of(
-                        new UnifiedAlphabetSymbol(terminalNumbering.apply(DomainsWithStringAttribute.AXM_DECL), true)
-                )
-        ));
+        Map<Integer, Domain> interpretationMap = BaseGrammar.getTermInterpretation(domainNames);
+        Map<Domain, Integer> tnMap = inverseMap(interpretationMap);
+        Function<Domain, Integer> terminalNumbering = tnMap::get;
+        Function<Integer, Domain> interpretation = interpretationMap::get;
+        int[][] table = BaseGrammar.getPredictionTable();
+        Map<Integer, Map<Integer, List<UnifiedAlphabetSymbol>>> rules = BaseGrammar.getRules();
 
         if (errCount == 0) {
             try {
@@ -340,7 +204,7 @@ public class GrammarCreationTest1 {
                                 .parse(
                                         tokensToParse,
                                         nonTerminalNames,
-                                        0,
+                                        axiom,
                                         terminalNumbering,
                                         interpretation,
                                         table,
@@ -358,40 +222,12 @@ public class GrammarCreationTest1 {
 
                 String grammarString = grammar.toString();
 
-                Function<Integer, String> gtai = grammar.getNativeTai();
-                Function<Integer, String> gntai = grammar.getNativeNtai();
-                for (int i = 0; i < grammar.getTerminalAlphabetSize(); i++) {
-                    System.out.println(gtai.apply(i));
-                }
-                for (int i = 0; i < grammar.getNonTerminalAlphabetSize(); i++) {
-                    System.out.println(gntai.apply(i));
-                }
-
-                System.out.println();
-
-                for (int i = 0; i < grammar.getNonTerminalAlphabetSize(); i++) {
-                    List<UAString> productions = grammar.getProductions(i);
-                    System.out.println(gntai.apply(i) + " = ");
-                    for (UAString p : productions) {
-                        System.out.println("\t" + p.toString(gtai, gntai));
-                    }
-                }
-
                 System.out.println();
                 System.out.println(grammarString);
                 System.out.println();
 
-                int[][] table2 = grammar.buildPredictiveAnalysisTable();
-                for (int i = 0; i < table2.length; i++) {
-                    for (int j = 0; j < table2[i].length; j++) {
-                        System.out.print(table2[i][j] + ", ");
-                    }
-                    System.out.println();
-                }
-
                 String className = "BaseGrammar";
-                String gen = io.github.sboyanovich.parsergenerator.Utility
-                        .grammarAsClass(grammar, className);
+                String gen = io.github.sboyanovich.parsergenerator.Utility.grammarAsClass(grammar, className);
                 writeToFile(
                         "src/io/github/sboyanovich/parsergenerator/generated/" + className + ".java",
                         gen
