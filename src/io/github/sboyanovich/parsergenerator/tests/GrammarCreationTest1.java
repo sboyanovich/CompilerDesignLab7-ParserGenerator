@@ -1,12 +1,12 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
 import io.github.sboyanovich.parsergenerator.*;
-import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
-import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
-import io.github.sboyanovich.parsergenerator.generated.BaseGrammar;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;
+import io.github.sboyanovich.parsergenerator.generated.BaseGrammar;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.automata.NFA;
 import io.github.sboyanovich.scannergenerator.scanner.Compiler;
 import io.github.sboyanovich.scannergenerator.scanner.*;
@@ -21,9 +21,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.github.sboyanovich.parsergenerator.Utility.inverseMap;
-import static io.github.sboyanovich.parsergenerator.Utility.parse;
-import static io.github.sboyanovich.parsergenerator.Utility.writeToFile;
+import static io.github.sboyanovich.parsergenerator.Utility.*;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.alphanumerics;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.letters;
 import static io.github.sboyanovich.parsergenerator.data.StateTags.*;

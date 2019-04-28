@@ -1,10 +1,11 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
+import io.github.sboyanovich.parsergenerator.ParseException;
 import io.github.sboyanovich.parsergenerator.ParseTree;
-import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.automata.NFA;
 import io.github.sboyanovich.scannergenerator.scanner.Compiler;
 import io.github.sboyanovich.scannergenerator.scanner.*;
@@ -12,7 +13,6 @@ import io.github.sboyanovich.scannergenerator.scanner.Scanner;
 import io.github.sboyanovich.scannergenerator.scanner.token.Domain;
 import io.github.sboyanovich.scannergenerator.scanner.token.Token;
 import io.github.sboyanovich.scannergenerator.utility.Utility;
-import io.github.sboyanovich.parsergenerator.ParseException;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -1,10 +1,10 @@
 package io.github.sboyanovich.parsergenerator;
 
-import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
-import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.automata.NFA;
 import io.github.sboyanovich.scannergenerator.scanner.Compiler;
 import io.github.sboyanovich.scannergenerator.scanner.*;
