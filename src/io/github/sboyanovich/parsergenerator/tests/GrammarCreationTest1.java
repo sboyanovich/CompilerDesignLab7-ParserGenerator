@@ -1,12 +1,12 @@
 package io.github.sboyanovich.parsergenerator.tests;
 
 import io.github.sboyanovich.parsergenerator.*;
+import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
+import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
+import io.github.sboyanovich.parsergenerator.generated.BaseGrammar;
 import io.github.sboyanovich.parsergenerator.data.DomainsWithStringAttribute;
 import io.github.sboyanovich.parsergenerator.data.SimpleDomains;
 import io.github.sboyanovich.parsergenerator.data.StateTags;
-import io.github.sboyanovich.parsergenerator.generated.BaseGrammar;
-import io.github.sboyanovich.parsergenerator.misc.CFGrammar;
-import io.github.sboyanovich.parsergenerator.misc.UnifiedAlphabetSymbol;
 import io.github.sboyanovich.scannergenerator.automata.NFA;
 import io.github.sboyanovich.scannergenerator.scanner.Compiler;
 import io.github.sboyanovich.scannergenerator.scanner.*;
@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.github.sboyanovich.parsergenerator.Utility.inverseMap;
+import static io.github.sboyanovich.parsergenerator.Utility.parse;
 import static io.github.sboyanovich.parsergenerator.Utility.writeToFile;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.alphanumerics;
 import static io.github.sboyanovich.parsergenerator.data.CommonCharClasses.letters;
@@ -29,7 +30,7 @@ import static io.github.sboyanovich.parsergenerator.data.StateTags.*;
 import static io.github.sboyanovich.scannergenerator.utility.Utility.*;
 
 /**
- * GENERATING PARSER FOR GRAMMAR GRAMMAR USING GENERATED META-GRAMMAR PARSER
+ * GENERATING PARSER FOR ARITHMETIC EXPRESSION GRAMMAR (USING GENERATED META-GRAMMAR PARSER)
  */
 public class GrammarCreationTest1 {
     public static void main(String[] args) {
@@ -142,7 +143,7 @@ public class GrammarCreationTest1 {
         String dot = recognizer.toGraphvizDotString(Object::toString, true);
         System.out.println(dot);
 
-        String text = Utility.getText("l7test3.txt");
+        String text = Utility.getText("l7test.txt");
 
         Compiler compiler = new Compiler(recognizer);
         Scanner scanner = compiler.getScanner(text);
@@ -178,6 +179,7 @@ public class GrammarCreationTest1 {
         for (Map.Entry<Position, Message> entry : messages.entrySet()) {
             System.out.println(entry.getValue() + " at " + entry.getKey());
         }
+
         List<String> nonTerminalNamesList = BaseGrammar.getNonTerminalNames();
 
         Function<Integer, String> nonTerminalNames = nonTerminalNamesList::get;
@@ -200,18 +202,19 @@ public class GrammarCreationTest1 {
         if (errCount == 0) {
             try {
                 ParseTree derivation =
-                        io.github.sboyanovich.parsergenerator.Utility
-                                .parse(
-                                        tokensToParse,
-                                        nonTerminalNames,
-                                        axiom,
-                                        terminalNumbering,
-                                        interpretation,
-                                        table,
-                                        rules
-                                );
+                        parse(
+                                tokensToParse,
+                                nonTerminalNames,
+                                axiom,
+                                terminalNumbering,
+                                interpretation,
+                                table,
+                                rules
+                        );
 
                 CFGrammar grammar = GrammarCreator.createGrammar(derivation);
+
+                System.out.println("\n" + grammar + "\n");
 
                 List<String> useless = grammar.getExplicitlyUselessNonTerminals().stream()
                         .map(i -> grammar.getNativeNtai().apply(i))
@@ -220,18 +223,15 @@ public class GrammarCreationTest1 {
                     throw new AppException("There are useless nonterminals in this grammar: " + useless.toString());
                 }
 
-                String grammarString = grammar.toString();
-
-                System.out.println();
-                System.out.println(grammarString);
-                System.out.println();
-
-                String className = "BaseGrammar";
+                String className = "ArithmeticExpressionGrammar";
                 String gen = io.github.sboyanovich.parsergenerator.Utility.grammarAsClass(grammar, className);
                 writeToFile(
                         "src/io/github/sboyanovich/parsergenerator/generated/" + className + ".java",
                         gen
                 );
+
+                dot = derivation.toGraphvizDotString(nonTerminalNames);
+                System.out.println(dot);
 
             } catch (ParseException e) {
                 System.out.println(e.getMessage());
@@ -239,11 +239,11 @@ public class GrammarCreationTest1 {
             } catch (GrammarCreationException e) {
                 System.out.println(e.getMessage());
                 System.out.println("Grammar could not be created.");
-            } catch (PredictionTableCreationException e) {
-                System.out.println(e.getMessage());
             } catch (AppException e) {
                 System.out.println(e.getMessage());
                 System.out.println("App cannot proceed.");
+            } catch (PredictionTableCreationException e) {
+                System.out.println(e.getMessage());
             }
         } else {
             System.out.println("There are lexical errors in the input. Parsing cannot begin.");
