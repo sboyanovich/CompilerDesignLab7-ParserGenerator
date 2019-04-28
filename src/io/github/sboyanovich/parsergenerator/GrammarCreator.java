@@ -21,7 +21,7 @@ public class GrammarCreator {
     private int ntCounter;
     private int axiom;
 
-    public GrammarCreator(ParseTree tree) {
+    private GrammarCreator(ParseTree tree) {
         this.tree = tree;
         this.terminalNames = new HashMap<>();
         this.nonTerminalNames = new HashMap<>();
@@ -29,6 +29,11 @@ public class GrammarCreator {
         this.tCounter = 0;
         this.ntCounter = 0;
         this.axiom = -1;
+    }
+
+    // Stateful algorithm is encapsulated in an internal object, needed only for one call of createGrammar(...)
+    public static CFGrammar createGrammar(ParseTree tree) throws GrammarCreationException {
+        return new GrammarCreator(tree).createGrammar();
     }
 
     // GRAMMAR
@@ -43,7 +48,7 @@ public class GrammarCreator {
             7	<lhs>		    := NON_TERMINAL | AXM_DECL .
         */
     // tree is known to concern this grammar
-    public CFGrammar createGrammar() throws GrammarCreationException {
+    private CFGrammar createGrammar() throws GrammarCreationException {
         ParseTree.NonTerminalNode root = this.tree.getRoot();
         ParseTree.NonTerminalNode ruleCNode = (ParseTree.NonTerminalNode) root.getChildren().get(0);
         ParseTree.NonTerminalNode rlCNode = (ParseTree.NonTerminalNode) root.getChildren().get(1);

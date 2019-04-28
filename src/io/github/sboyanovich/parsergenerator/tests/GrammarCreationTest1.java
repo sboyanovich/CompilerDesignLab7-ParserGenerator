@@ -211,7 +211,7 @@ public class GrammarCreationTest1 {
                                         rules
                                 );
 
-                CFGrammar grammar = new GrammarCreator(derivation).createGrammar();
+                CFGrammar grammar = GrammarCreator.createGrammar(derivation);
 
                 List<String> useless = grammar.getExplicitlyUselessNonTerminals().stream()
                         .map(i -> grammar.getNativeNtai().apply(i))

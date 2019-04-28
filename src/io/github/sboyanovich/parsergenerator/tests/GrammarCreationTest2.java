@@ -212,7 +212,7 @@ public class GrammarCreationTest2 {
                                 rules
                         );
 
-                CFGrammar grammar = new GrammarCreator(derivation).createGrammar();
+                CFGrammar grammar = GrammarCreator.createGrammar(derivation);
 
                 System.out.println("\n" + grammar + "\n");
 
