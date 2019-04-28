@@ -53,6 +53,7 @@ public class ArithmeticExpressionCalculator {
         }
     }
 
+    // called only for non-nulled e1
     private static int e1(int left, ParseTree.NonTerminalNode e1Node) {
         ParseTree.NonTerminalNode tCNode = (ParseTree.NonTerminalNode) e1Node.getChildren().get(1);
         ParseTree.NonTerminalNode e1CNode = (ParseTree.NonTerminalNode) e1Node.getChildren().get(2);
